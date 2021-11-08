@@ -1,0 +1,27 @@
+<table>
+    <tbody>
+        <tr *ngFor="let question of currentQuestion">
+            <ng-container *ngIf="question.key == 'options'">
+                <td>{{question.key}}:</td>
+                <br>
+                <table>
+                    <tbody>
+                        <tr *ngFor="let option of question.value">
+                            <td>{{option.id}}:</td>
+                            <td>{{option.option}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+            <ng-container *ngIf="question.key == 'topic'">
+                <td>{{question.key}}:</td>
+                <td>{{currentTopic}}</td>
+            </ng-container> 
+            <ng-container *ngIf="question.key != 'options' && question.key != 'topic'">
+                <td>{{question.key}}:</td>
+                <td>{{question.value}}</td>
+            </ng-container>            
+            <br>
+        </tr>
+    </tbody>
+</table>

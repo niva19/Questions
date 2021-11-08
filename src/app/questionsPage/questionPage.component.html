@@ -1,0 +1,118 @@
+<ng-container *ngIf="isFinished == false">
+    <h6 style="color: royalblue;">{{getKeyByValue()}}</h6>
+
+    <h2>{{currentIndex + 1}}/{{questions.length}}</h2>
+
+    <ng-container *ngIf="questions[currentIndex].clarification != undefined">
+        <h2 style="color: royalblue;">{{questions[currentIndex].clarification}}</h2>
+    </ng-container>
+
+    <h2 (click)="goToDetail($event)" (contextmenu)="onRightClick()">{{questions[currentIndex].question}}</h2>
+
+    <ng-container *ngIf="questions[currentIndex].code != undefined">
+        <textarea style="height: 100px; width: 97%;" disabled>{{questions[currentIndex].code}}</textarea>
+    </ng-container>
+
+    <ng-container *ngIf="questions[currentIndex].questionType == questionsTypes.UniqueSelection || questions[currentIndex].questionType == questionsTypes.TrueFalse">
+        <form>
+            <div #radioBoxContainer>
+                <div *ngFor="let option of questions[currentIndex].options">
+                    <div>
+                        <input  id="{{option.id}}"
+                                type="radio"
+                                class="custom-control-input"
+                                value="{{option.id}}"
+                                name="optionsRB"
+                                (change)="updateUniqueCheckedOptions(option)">
+                        <label class="custom-control-label" for="{{option.id}}">{{option.option}}</label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button (click)="checkUniqueQuestion()" (keyup.enter)="checkUniqueQuestion()">Submit</button>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="questions[currentIndex].questionType == questionsTypes.MultipleSelection">
+        <div #checkBoxContainer>
+            <div *ngFor="let option of questions[currentIndex].options">
+                <label>
+                    <input type="checkbox"
+                            name="options"
+                            value="{{option.id}}"
+                            (change)="updateCheckedOptions(option, $event)"/>
+                    {{option.option}}
+                </label>
+            </div>
+        </div>
+        <br>
+        <button (click)="checkMultipleQuestion()">Submit</button>
+        <br>
+    </ng-container>
+
+    <ng-container *ngIf="questions[currentIndex].questionType == questionsTypes.Complete">
+        <form #myForm="ngForm" (submit)="completeForm(myForm)" novalidate>
+            
+            <textarea
+                #textareacode
+                style="width: 97%; height: 100px;"
+                ngModel name="textAreaAnswer"
+                (keydown)="onKeyEvent($event)"
+                autofocus>
+            </textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="questions[currentIndex].questionType == questionsTypes.Sort">
+        <form #myForm="ngForm" (submit)="sortForm(myForm)" novalidate>
+            <textarea style="height: 100px; width: 97%;" disabled>{{questions[currentIndex].sortOptions.join('\n')}}</textarea>
+            <br>
+            <textarea
+                #textareacode
+                style="width: 97%; height: 100px;"
+                ngModel name="textAreaAnswer"
+                autofocus>
+            </textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="mode == modes.include && secondRound == false">
+        <br>
+        <button (click)="IncludeQuestion()">Include Question</button>
+    </ng-container>
+
+    <ng-container *ngIf="questions[currentIndex].questionType == undefined">
+        <h1>Question without type</h1>
+    </ng-container>
+</ng-container>
+
+<ng-container *ngIf="isFinished == true">
+    <ng-container *ngIf="mode == modes.training">
+        <h1>Test completed!!!</h1>
+    </ng-container>
+    
+    <ng-container *ngIf="mode == modes.review">
+        <h1>Test completed!!!</h1>
+        <ng-container *ngIf="reviewQuestions.size != 0">
+            <button (click)="showReviewQuestions()">Review Questions</button>
+        </ng-container>
+    </ng-container>
+    
+    <ng-container *ngIf="mode == modes.hard">
+        <h1>Test completed!!!</h1>
+        <h2>Score</h2>
+        <h2>{{score}}/{{questions.length}}</h2>
+    </ng-container>
+    
+    <ng-container *ngIf="mode == modes.include">
+        <h1>Test completed!!!</h1>
+        <ng-container *ngIf="includeQuestions.size != 0">
+            <button (click)="showIncludeQuestions()">Show include Questions</button>
+        </ng-container>
+    </ng-container>
+</ng-container>
+
